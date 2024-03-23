@@ -1,4 +1,4 @@
-package ro.unicredit.pfmreport.services.reports;
+package ro.unicredit.pfmreport.services.dtos.reports;
 
 import lombok.*;
 

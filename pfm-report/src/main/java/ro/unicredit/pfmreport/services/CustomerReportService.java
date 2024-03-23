@@ -3,8 +3,8 @@ package ro.unicredit.pfmreport.services;
 import org.springframework.stereotype.Service;
 import ro.unicredit.pfmreport.services.dtos.CategoryDetails;
 import ro.unicredit.pfmreport.services.dtos.TransactionDetails;
-import ro.unicredit.pfmreport.services.reports.CustomerReport;
-import ro.unicredit.pfmreport.services.reports.CustomerReportRecord;
+import ro.unicredit.pfmreport.services.dtos.reports.CustomerReport;
+import ro.unicredit.pfmreport.services.dtos.reports.CustomerReportRecord;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;

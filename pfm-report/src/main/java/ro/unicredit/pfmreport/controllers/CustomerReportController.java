@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import ro.unicredit.pfmreport.services.CustomerReportService;
 import ro.unicredit.pfmreport.services.dtos.TransactionDetails;
-import ro.unicredit.pfmreport.services.reports.CustomerReport;
+import ro.unicredit.pfmreport.services.dtos.reports.CustomerReport;
 
 import java.util.List;
 

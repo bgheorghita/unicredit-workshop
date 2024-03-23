@@ -49,12 +49,13 @@ public class CustomerReportService {
                     categoryStatistics,
                     percentagesIndexedByCategory
             );
-            CustomerReportRecord customerReportRecord = new CustomerReportRecord(
-                    category.getValue(),
-                    amount,
-                    percentage,
-                    subcategories
-            );
+
+            CustomerReportRecord customerReportRecord = CustomerReportRecord.builder()
+                    .categoryName(category.getValue())
+                    .amount(amount)
+                    .percentage(percentage)
+                    .subcategories(subcategories)
+                    .build();
             customerReport.addRecord(customerReportRecord);
         });
         return customerReport;
@@ -71,12 +72,13 @@ public class CustomerReportService {
                         categoryStatistics,
                         percentagesIndexedByCategory
                 );
-                CustomerReportRecord record = new CustomerReportRecord(
-                        category.getValue(),
-                        categoryStatistics.get(category),
-                        percentagesIndexedByCategory.get(category),
-                        subcategories
-                );
+                 CustomerReportRecord record = CustomerReportRecord.builder()
+                         .categoryName(category.getValue())
+                         .amount(categoryStatistics.get(category))
+                         .percentage(percentagesIndexedByCategory.get(category))
+                         .subcategories(subcategories)
+                         .build();
+
                 records.add(record);
             }
         });

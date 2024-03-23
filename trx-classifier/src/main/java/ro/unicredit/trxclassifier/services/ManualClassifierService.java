@@ -14,19 +14,24 @@ import ro.unicredit.trxclassifier.services.dtos.responses.ResponseTransactionDto
 public class ManualClassifierService {
     private final RestTemplate restTemplate;
 
+    // TODO: split the method into smaller methods
+    // TODO: move urls to the properties file
+
     public ResponseTransactionDto classify(Long txId, Long categoryId) {
         String transactionUrl = "http://localhost:8080/transactions/" + txId;
-        String categoryUrl =  "http://localhost:8080/categories/" + categoryId;
+        String categoryUrl = "http://localhost:8080/categories/" + categoryId;
 
-        ResponseEntity<ResponseTransactionDto> transactionDtoResponseEntity = restTemplate.getForEntity(transactionUrl, ResponseTransactionDto.class);
+        ResponseEntity<ResponseTransactionDto> transactionDtoResponseEntity = restTemplate.getForEntity(
+                transactionUrl, ResponseTransactionDto.class);
         ResponseTransactionDto responseTransactionDto = transactionDtoResponseEntity.getBody();
-        if(responseTransactionDto == null || !transactionDtoResponseEntity.getStatusCode().is2xxSuccessful()) {
+        if (responseTransactionDto == null || !transactionDtoResponseEntity.getStatusCode().is2xxSuccessful()) {
             throw new NotFoundException("Transaction with id: " + txId + " not found.");
         }
 
-        ResponseEntity<ResponseCategoryDto> categoryDtoResponseEntity = restTemplate.getForEntity(categoryUrl, ResponseCategoryDto.class);
+        ResponseEntity<ResponseCategoryDto> categoryDtoResponseEntity = restTemplate.getForEntity(
+                categoryUrl, ResponseCategoryDto.class);
         ResponseCategoryDto responseCategoryDto = categoryDtoResponseEntity.getBody();
-        if(responseCategoryDto == null || !categoryDtoResponseEntity.getStatusCode().is2xxSuccessful()) {
+        if (responseCategoryDto == null || !categoryDtoResponseEntity.getStatusCode().is2xxSuccessful()) {
             throw new NotFoundException("Category with id: " + categoryId + " not found.");
         }
 

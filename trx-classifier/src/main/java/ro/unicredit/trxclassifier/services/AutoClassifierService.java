@@ -19,6 +19,8 @@ public class AutoClassifierService {
     private final RestTemplate restTemplate;
     private final ManualClassifierService manualClassifierService;
 
+    // TODO: move urls to the properties file or constants
+
     public ResponseTransactionDto classifyByTxDescription(Long txId, String txDescription) {
         ResponseEntity<List<ResponseCategoryDto>> categories = restTemplate.exchange(
                 "http://localhost:8080/categories/keywords?text=" + txDescription,

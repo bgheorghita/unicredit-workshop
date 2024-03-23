@@ -7,8 +7,6 @@ public class WordUtils {
         }
         String cleanValue = value.replaceAll("[\\s-,.*]", "").toLowerCase();
         String cleanToken = token.replaceAll("[\\s-,.*]", "").toLowerCase();
-        if(cleanValue.equals(cleanToken))
-            return true;
-        return false;
+        return cleanValue.equals(cleanToken);
     }
 }

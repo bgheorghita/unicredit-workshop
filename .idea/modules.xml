@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/PFM/pfm.iml" filepath="$PROJECT_DIR$/PFM/pfm.iml" />
+      <module fileurl="file://$PROJECT_DIR$/pfm-report/pfm-report.iml" filepath="$PROJECT_DIR$/pfm-report/pfm-report.iml" />
+      <module fileurl="file://$PROJECT_DIR$/trx-classifier/trx-classifier.iml" filepath="$PROJECT_DIR$/trx-classifier/trx-classifier.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/unicredit-workshop.iml" filepath="$PROJECT_DIR$/.idea/unicredit-workshop.iml" />
+    </modules>
+  </component>
+</project>

@@ -1,6 +1,5 @@
 package ro.unicredit.trxclassifier.services;
 
-import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
@@ -22,14 +21,14 @@ public class AutoClassifierService {
     private final static String TEXT_PARAMETER = "text";
     private final RestTemplate restTemplate;
     private final ManualClassifierService manualClassifierService;
-    @Value("${url.category}")
-    private String BASE_CATEGORY_URL;
+    @Value("${url.categories}")
+    private String BASE_CATEGORIES_URL;
     @Value("${url.keywords}")
-    private String BASE_KEYWORD_URL;
+    private String BASE_KEYWORDS_URL;
 
     public ResponseTransactionDto classifyByTxDescription(Long txId, String txDescription) {
         ResponseEntity<List<ResponseCategoryDto>> categories = restTemplate.exchange(
-                BASE_CATEGORY_URL + "/" + KEYWORDS_PATH + "?" + TEXT_PARAMETER + "=" + txDescription,
+                BASE_CATEGORIES_URL + "/" + KEYWORDS_PATH + "?" + TEXT_PARAMETER + "=" + txDescription,
                 HttpMethod.GET,
                 null,
                 new ParameterizedTypeReference<>() {
@@ -48,7 +47,7 @@ public class AutoClassifierService {
     public ResponseAutoClassifierV2Dto classifyByTxDescriptionV2(Long txId, String description) {
         String[] tokens = description.split("[\\s-*.,]+");
         ResponseEntity<List<ResponseKeywordDto>> keywordsResponse = restTemplate.exchange(
-                BASE_KEYWORD_URL + "?" + KEYWORDS_PATH + "=" + String.join(", ", tokens),
+                BASE_KEYWORDS_URL + "?" + KEYWORDS_PATH + "=" + String.join(", ", tokens),
                 HttpMethod.GET,
                 null,
                 new ParameterizedTypeReference<>() {

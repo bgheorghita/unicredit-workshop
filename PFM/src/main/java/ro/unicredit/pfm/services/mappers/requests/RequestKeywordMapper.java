@@ -10,5 +10,4 @@ import java.util.List;
 public interface RequestKeywordMapper {
     RequestKeywordDto toDto(Keyword keyword);
     Keyword toEntity(RequestKeywordDto requestKeywordDto);
-    List<RequestKeywordDto> toKeywordDtoList(List<Keyword> keywords);
 }

@@ -9,8 +9,8 @@ import java.util.List;
 
 public interface CategoryRepository extends JpaRepository<Category, Long> {
     @Query("SELECT DISTINCT c " +
-            "FROM Category c " +
-            "JOIN Keyword k ON k.category.id = c.id " +
+            "FROM Keyword k " +
+            "JOIN k.category c " +
             "WHERE REPLACE(?1, ' ', '') LIKE CONCAT('%', REPLACE(k.value, ' ', ''), '%')")
     List<Category> findByKeywordsValueContainedIn(String text);
 }

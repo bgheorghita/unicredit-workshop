@@ -1,6 +1,7 @@
 package ro.unicredit.pfmreport.services;
 
 import org.springframework.stereotype.Service;
+import org.springframework.util.ObjectUtils;
 import ro.unicredit.pfmreport.services.dtos.CategoryDetails;
 import ro.unicredit.pfmreport.services.dtos.TransactionDetails;
 import ro.unicredit.pfmreport.services.dtos.reports.CustomerReport;
@@ -26,9 +27,10 @@ public class CustomerReportService {
 
     private void addToCategoryStatistics(CategoryDetails category, BigDecimal amount,
                                          Map<CategoryDetails, BigDecimal> categoryStatistics) {
-        if (category == null) {
+        if (ObjectUtils.isEmpty(category)) {
             return;
         }
+
         categoryStatistics.put(category, categoryStatistics.getOrDefault(category, BigDecimal.ZERO).add(amount));
         CategoryDetails parentCategory = category.getParent();
         if (parentCategory != null) {
@@ -40,7 +42,7 @@ public class CustomerReportService {
                                                 Map<CategoryDetails, Float> percentagesIndexedByCategory) {
         CustomerReport customerReport = new CustomerReport();
         percentagesIndexedByCategory.forEach((category, percentage) -> {
-            if (!isParentCategory(category)) {
+            if(ObjectUtils.isEmpty(category.getParent())) {
                 return;
             }
             BigDecimal amount = categoryStatistics.get(category);
@@ -62,22 +64,23 @@ public class CustomerReportService {
     }
 
     private List<CustomerReportRecord> computeSubcategoriesEntries(CategoryDetails parentCategory,
-           Map<CategoryDetails, BigDecimal> categoryStatistics, Map<CategoryDetails, Float> percentagesIndexedByCategory) {
+                                     Map<CategoryDetails, BigDecimal> categoryStatistics,
+                                     Map<CategoryDetails, Float> percentagesIndexedByCategory) {
         List<CustomerReportRecord> records = new ArrayList<>();
         categoryStatistics.keySet().forEach(category -> {
             CategoryDetails categoryParent = category.getParent();
-            if (categoryParent != null && categoryParent.getId().equals(parentCategory.getId())) {
+            if (!ObjectUtils.isEmpty(categoryParent) && categoryParent.getId().equals(parentCategory.getId())) {
                 List<CustomerReportRecord> subcategories = computeSubcategoriesEntries(
                         category,
                         categoryStatistics,
                         percentagesIndexedByCategory
                 );
-                 CustomerReportRecord record = CustomerReportRecord.builder()
-                         .categoryName(category.getValue())
-                         .amount(categoryStatistics.get(category))
-                         .percentage(percentagesIndexedByCategory.get(category))
-                         .subcategories(subcategories)
-                         .build();
+                CustomerReportRecord record = CustomerReportRecord.builder()
+                        .categoryName(category.getValue())
+                        .amount(categoryStatistics.get(category))
+                        .percentage(percentagesIndexedByCategory.get(category))
+                        .subcategories(subcategories)
+                        .build();
 
                 records.add(record);
             }
@@ -85,27 +88,23 @@ public class CustomerReportService {
         return records;
     }
 
-    private boolean isParentCategory(CategoryDetails categoryDetails) {
-        return categoryDetails.getParent() == null;
-    }
-
     private Map<CategoryDetails, Float> computePercentages(Map<CategoryDetails, BigDecimal> statistics) {
         BigDecimal totalAmount = BigDecimal.ZERO;
-
-        for (Map.Entry<CategoryDetails, BigDecimal> entry : statistics.entrySet()) {
-            CategoryDetails parentCategory = entry.getKey().getParent();
-            if (parentCategory != null) {
-                totalAmount = totalAmount.add(entry.getValue());
-            }
-        }
+        totalAmount = computeTotalAmount(statistics, totalAmount);
 
         Map<CategoryDetails, Float> percentagesIndexedByCategory = new HashMap<>();
+        computePercentage(statistics, totalAmount, percentagesIndexedByCategory);
+
+        return percentagesIndexedByCategory;
+    }
+
+    private void computePercentage(Map<CategoryDetails, BigDecimal> statistics, BigDecimal totalAmount, Map<CategoryDetails, Float> percentagesIndexedByCategory) {
         for (Map.Entry<CategoryDetails, BigDecimal> entry : statistics.entrySet()) {
             BigDecimal categoryAmount = entry.getValue();
             BigDecimal percentage;
             CategoryDetails parentCategory = entry.getKey().getParent();
 
-            if (parentCategory != null) {
+            if (!ObjectUtils.isEmpty(parentCategory)) {
                 percentage = categoryAmount.divide(totalAmount, 4, RoundingMode.HALF_UP)
                         .multiply(BigDecimal.valueOf(100));
             } else {
@@ -114,7 +113,15 @@ public class CustomerReportService {
 
             percentagesIndexedByCategory.put(entry.getKey(), percentage.floatValue());
         }
+    }
 
-        return percentagesIndexedByCategory;
+    private BigDecimal computeTotalAmount(Map<CategoryDetails, BigDecimal> statistics, BigDecimal totalAmount) {
+        for (Map.Entry<CategoryDetails, BigDecimal> entry : statistics.entrySet()) {
+            CategoryDetails parentCategory = entry.getKey().getParent();
+            if (!ObjectUtils.isEmpty(parentCategory)) {
+                totalAmount = totalAmount.add(entry.getValue());
+            }
+        }
+        return totalAmount;
     }
 }

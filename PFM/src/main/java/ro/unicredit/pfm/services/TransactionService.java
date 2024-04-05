@@ -65,6 +65,16 @@ public class TransactionService {
         return responseTransactionMapper.toDto(updatedTransaction);
     }
 
+    public ResponseTransactionDto updateTransactionCategory(Long txId, Long categoryId) {
+        Transaction existingTransaction = transactionRepository.findById(txId)
+                .orElseThrow(() -> new NotFoundException("Update failed. Transaction not found."));
+        Category existingCategory = categoryRepository.findById(categoryId)
+                .orElseThrow(() -> new NotFoundException("Update failed. Transaction not found."));
+        existingTransaction.setCategory(existingCategory);
+        Transaction updatedTransaction = transactionRepository.save(existingTransaction);
+        return responseTransactionMapper.toDto(updatedTransaction);
+    }
+
     private Transaction getAssociatedParent(RequestTransactionDto requestTransactionDto, Transaction existingTransaction) {
         Transaction associatedParent;
         if(requestTransactionDto.getParentId() != null) {

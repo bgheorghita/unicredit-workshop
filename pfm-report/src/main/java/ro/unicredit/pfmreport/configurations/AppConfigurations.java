@@ -1,2 +1,3 @@
-package ro.unicredit.pfmreport.configurations;public class AppConfigurations {
+package ro.unicredit.pfmreport.configurations;
+public class AppConfigurations {
 }

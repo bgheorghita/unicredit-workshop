@@ -20,7 +20,8 @@ public class CategoryService {
     private final ResponseCategoryMapper responseCategoryMapper;
 
     public List<ResponseCategoryDto> findAll(){
-        return responseCategoryMapper.toDto(categoryRepository.findAll());
+        List<Category> categories = categoryRepository.findAll();
+        return responseCategoryMapper.toDto(categories);
     }
 
     public ResponseCategoryDto findById(Long id) {

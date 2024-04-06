@@ -15,11 +15,13 @@ public class KeywordController {
     private final KeywordService keywordService;
 
     @GetMapping
-    public List<ResponseKeywordDto> findAll(@RequestParam List<String> keywords) {
-        if (keywords != null && !keywords.isEmpty()) {
-            return keywordService.findByValueContainedIn(keywords);
-        }
+    public List<ResponseKeywordDto> findAll() {
         return keywordService.findAll();
+    }
+
+    @GetMapping("/by-keywords")
+    public List<ResponseKeywordDto> findAllByKeywords(@RequestParam List<String> keywords) {
+        return keywordService.findByValueContainedIn(keywords);
     }
 
     @GetMapping("/{id}")

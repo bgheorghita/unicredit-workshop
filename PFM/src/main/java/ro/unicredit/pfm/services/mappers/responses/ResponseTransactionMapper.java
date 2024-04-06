@@ -8,7 +8,6 @@ import java.util.List;
 
 @Mapper(componentModel = "spring")
 public interface ResponseTransactionMapper {
-    Transaction toEntity(ResponseTransactionDto responseTransactionDto);
     ResponseTransactionDto toDto(Transaction transaction);
     List<ResponseTransactionDto> toDto(List<Transaction> transactions);
 }

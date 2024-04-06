@@ -1,0 +1,72 @@
+pfm-report
+
+OpenApiConfiguration,java > remove
+rename PFM project to somethins more suggestive
+
+CustomerReportService.java 
+- line 29, 70, 98, 109 - use ObjecUtils.isNotEmpty()
+- line 53, no need of new object
+- line 64 - format like: 
+private List<CustomerReportRecord> computeSubcategoriesEntries(CategoryDetails parentCategory,
+                                Map<CategoryDetails, BigDecimal> categoryStatistics, 
+                                Map<CategoryDetails, Float> percentagesIndexedByCategory)
+- line 77 -  no need of new object
+- line 89 - isParentCategory not required, used in only one place
+- line 96 to 100 - extract to new function computeTotalAmount
+- line 109 to 114  - extract to new function computePercentage 
+
+pfm - rename to something clearer
+
+KeywordController -
+- findAll - move logic to service 
+
+APIExceptionHandler 
+- use Slf4j instead of   ex.printStackTrace();
+- reorder private final static in order to comply java standard
+- remove unused imports
+
+Category Repository -> you can model the relationship in the entity if you set one of the annotations OneToOne, OneToMane, etc.... and on the mentioned entity you will also have the related entity, no need for explicit join
+
+RequestKeywordMapper
+- toDto and toKeywordDtoList - not used, remove them
+
+RequestTransactionMapper
+- toDto  - not used, remove it
+
+ResponseKeywordMapper - toEntity not used, remove it
+
+ResponseTransactionMapper - toEntity not used, remove it
+
+CategoryService 
+- findAll - format on multiple lines
+
+KeywordService  
+- deleteById -> what happens if category is not found
+
+TransactionService
+- sparse update method as: 55 - 59 one method, 60 - 64 another method, 66 - 71 another method
+- create method> updateExistingTransaction where you update the existing transaction
+
+APIExceptionHandler
+- change order private final static in order to comply to java standard
+
+ResponseKeywordDto
+    public Long categoryId; - change to private
+
+AutoClassifierController 
+- remove unused imports
+- move URL on application.properties
+- use ObjectUtils.isEmpty when test ==null
+
+classifyByTxDescriptionV2 
+- long txId not used
+- line 51 - keywordsResponse.getBody() - might be empty
+
+classifyV2
+- at builder 
+   - extract categoryCount.entrySet().stream()
+                        .max(Map.Entry.comparingByValue())
+                        .map(Map.Entry::getKey)
+                        .orElse(null) to a  method
+  - extract keywords.stream().map(responseKeywordDto ->
+                        new ResponseKeywordWithOccurrencesDto(responseKeywordDto,keywordCount.get(responseKeywordDto.getId()).toList())

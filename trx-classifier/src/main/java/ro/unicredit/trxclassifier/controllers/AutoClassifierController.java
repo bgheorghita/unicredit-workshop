@@ -4,10 +4,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import ro.unicredit.trxclassifier.services.AutoClassifierService;
 import ro.unicredit.trxclassifier.services.dtos.responses.ResponseAutoClassifierV2Dto;
-import ro.unicredit.trxclassifier.services.dtos.responses.ResponseKeywordDto;
 import ro.unicredit.trxclassifier.services.dtos.responses.ResponseTransactionDto;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/auto-classifier")

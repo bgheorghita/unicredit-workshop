@@ -51,24 +51,9 @@ public class TransactionService {
     public ResponseTransactionDto update(Long id, RequestTransactionDto requestTransactionDto){
         Transaction existingTransaction = transactionRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Update failed. Transaction not found."));
-        Category associatedCategory;
-        if(requestTransactionDto.getCategoryId() != null) {
-            associatedCategory = categoryRepository.findById(requestTransactionDto.getCategoryId()).orElse(null);
-        } else {
-            associatedCategory = existingTransaction.getCategory();
-        }
-        Keyword associatedKeyword;
-        if(requestTransactionDto.getKeywordId() != null) {
-            associatedKeyword = keywordRepository.findById(requestTransactionDto.getKeywordId()).orElse(null);
-        } else {
-            associatedKeyword = existingTransaction.getKeyword();
-        }
-        Transaction associatedParent;
-        if(requestTransactionDto.getParentId() != null) {
-            associatedParent = transactionRepository.findById(requestTransactionDto.getParentId()).orElse(null);
-        } else {
-            associatedParent = existingTransaction.getParent();
-        }
+        Category associatedCategory = getAssociatedCategory(requestTransactionDto, existingTransaction);
+        Keyword associatedKeyword = getAssociatedKeyword(requestTransactionDto, existingTransaction);
+        Transaction associatedParent = getAssociatedParent(requestTransactionDto, existingTransaction);
 
         existingTransaction.setCategory(associatedCategory);
         existingTransaction.setKeyword(associatedKeyword);
@@ -78,6 +63,46 @@ public class TransactionService {
         existingTransaction.setParent(associatedParent);
         Transaction updatedTransaction = transactionRepository.save(existingTransaction);
         return responseTransactionMapper.toDto(updatedTransaction);
+    }
+
+    public ResponseTransactionDto updateTransactionCategory(Long txId, Long categoryId) {
+        Transaction existingTransaction = transactionRepository.findById(txId)
+                .orElseThrow(() -> new NotFoundException("Update failed. Transaction not found."));
+        Category existingCategory = categoryRepository.findById(categoryId)
+                .orElseThrow(() -> new NotFoundException("Update failed. Transaction not found."));
+        existingTransaction.setCategory(existingCategory);
+        Transaction updatedTransaction = transactionRepository.save(existingTransaction);
+        return responseTransactionMapper.toDto(updatedTransaction);
+    }
+
+    private Transaction getAssociatedParent(RequestTransactionDto requestTransactionDto, Transaction existingTransaction) {
+        Transaction associatedParent;
+        if(requestTransactionDto.getParentId() != null) {
+            associatedParent = transactionRepository.findById(requestTransactionDto.getParentId()).orElse(null);
+        } else {
+            associatedParent = existingTransaction.getParent();
+        }
+        return associatedParent;
+    }
+
+    private Keyword getAssociatedKeyword(RequestTransactionDto requestTransactionDto, Transaction existingTransaction) {
+        Keyword associatedKeyword;
+        if(requestTransactionDto.getKeywordId() != null) {
+            associatedKeyword = keywordRepository.findById(requestTransactionDto.getKeywordId()).orElse(null);
+        } else {
+            associatedKeyword = existingTransaction.getKeyword();
+        }
+        return associatedKeyword;
+    }
+
+    private Category getAssociatedCategory(RequestTransactionDto requestTransactionDto, Transaction existingTransaction) {
+        Category associatedCategory;
+        if(requestTransactionDto.getCategoryId() != null) {
+            associatedCategory = categoryRepository.findById(requestTransactionDto.getCategoryId()).orElse(null);
+        } else {
+            associatedCategory = existingTransaction.getCategory();
+        }
+        return associatedCategory;
     }
 
     public void splitTransaction(TransactionSplitDto transactionSplitDto, Transaction transaction) {

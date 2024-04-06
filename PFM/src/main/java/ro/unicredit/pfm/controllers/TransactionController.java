@@ -35,6 +35,11 @@ public class TransactionController {
         return transactionService.update(id, requestTransactionDto);
     }
 
+    @PutMapping("/{txId}/{categoryId}")
+    public ResponseTransactionDto updateTransactionCategory(@PathVariable Long txId, @PathVariable Long categoryId) {
+        return transactionService.updateTransactionCategory(txId, categoryId);
+    }
+
     @DeleteMapping("/{id}")
     public ResponseTransactionDto deleteTransaction(@PathVariable Long id){
         return transactionService.deleteById(id);

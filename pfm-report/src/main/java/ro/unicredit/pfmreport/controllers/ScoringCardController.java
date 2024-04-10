@@ -7,8 +7,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import ro.unicredit.pfmreport.services.ScoringCardService;
 import ro.unicredit.pfmreport.services.dtos.ScoringResult;
-import ro.unicredit.pfmreport.services.dtos.TransactionAmount;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @RestController
@@ -19,7 +19,7 @@ public class ScoringCardController {
     private final ScoringCardService scoringCardService;
 
     @GetMapping
-    public ScoringResult computeScoring(@RequestBody List<TransactionAmount> transactionAmounts) {
+    public ScoringResult computeScoring(@RequestBody List<BigDecimal> transactionAmounts) {
         return scoringCardService.computeScoring(transactionAmounts);
     }
 }

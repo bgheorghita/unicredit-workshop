@@ -9,8 +9,8 @@ import java.util.List;
 @NoArgsConstructor
 @Data
 public class CustomerReport {
-    private List<CustomerReportRecord> records = new ArrayList<>();
-    public void addRecord(CustomerReportRecord record) {
-        records.add(record);
+    private List<CustomerReportEntry> entries = new ArrayList<>();
+    public void addRecord(CustomerReportEntry entry) {
+        entries.add(entry);
     }
 }

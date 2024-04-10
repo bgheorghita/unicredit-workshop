@@ -3,6 +3,9 @@ import { Table, Button, Space, Modal } from 'antd';
 import CategoriesDropDown from './CategoriesDropDown';
 import { Tag } from "antd";
 
+const baseUrl = 'http://localhost:8081';
+const transactionsRequestPath = 'transactions';
+
 const TransactionTable = () => {
   const [transactions, setTransactions] = useState([]);
   const [selectedTxId, setSelectedTxId] = useState(null);
@@ -14,7 +17,7 @@ const TransactionTable = () => {
 
   const fetchTransactions = async () => {
     try {
-      const response = await fetch('http://localhost:8081/transactions');
+      const response = await fetch(baseUrl + '/' + transactionsRequestPath);
       const data = await response.json();
       setTransactions(data);
     } catch (error) {

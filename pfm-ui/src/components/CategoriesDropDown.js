@@ -1,38 +1,74 @@
-import React, {useEffect, useState} from 'react';
-import { DownOutlined, SmileOutlined } from '@ant-design/icons';
-import {Dropdown, Select, Space} from 'antd';
-const CategoriesDropDown = () => {
-    const [categories, setCategories] = useState([]);
-    useEffect(() => {
-        fetchCategories();
-    }, []);
+import React, { useEffect, useState } from 'react';
+import { Select } from 'antd';
 
-    const fetchCategories = async () => {
-        try {
-            const response = await fetch('http://localhost:8080/categories');
-            const data = await response.json();
-            setCategories(data);
-        } catch (error) {
-            console.error('Error fetching transactions:', error);
-        }
-    };
+const { Option } = Select;
+const baseUrl = 'http://localhost:8081';
+const categoriesRequestPath = 'categories';
+const transactionsRequestPath = 'transactions';
 
-    return(
-        <Select
-            showSearch
-            placeholder="Select a person"
-            optionFilterProp="children"
-            // onChange={onChange}
-            // onSearch={onSearch}
-            // filterOption={filterOption}
-            options={
-                categories.map((category) => ({
-                    key: category.id,
-                    label: category.value,
-                }))
-            }
-        />
-    );
+const CategoriesDropDown = ({ txId, onUpdateCategory }) => {
+  const [categories, setCategories] = useState([]);
+  const [selectedCategory, setSelectedCategory] = useState(null);
+
+  useEffect(() => {
+    fetchCategories();
+    fetchTransactionDetails();
+  }, []);
+
+  const fetchCategories = async () => {
+    try {
+      const response = await fetch(baseUrl + '/' + categoriesRequestPath);
+      const data = await response.json();
+      setCategories(data);
+    } catch (error) {
+      console.error('Error fetching categories:', error);
+    }
+  };
+
+  const fetchTransactionDetails = async () => {
+    try {
+      const response = await fetch(`${baseUrl}/${transactionsRequestPath}/${txId}`);
+      const data = await response.json();
+      setSelectedCategory(data.category);
+    } catch (error) {
+      console.error('Error fetching transaction details:', error);
+    }
+  };
+
+  const handleCategoryChange = async (value) => {
+    try {
+      const response = await fetch(`${baseUrl}/${transactionsRequestPath}/${txId}/${value}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+      if (response.ok) {
+        onUpdateCategory(value);
+        setSelectedCategory(value);
+        console.error('Failed to update category');
+      }
+    } catch (error) {
+      console.error('Error updating category:', error);
+    }
+  };
+
+  return (
+    <Select
+      showSearch
+      placeholder="Select category"
+      optionFilterProp="children"
+      style={{ width: '200px' }}
+      value={selectedCategory}
+      onChange={handleCategoryChange}
+    >
+      {categories.map((category) => (
+        <Option key={category.id} value={category.id}>
+          {category.value}
+        </Option>
+      ))}
+    </Select>
+  );
 };
-export default CategoriesDropDown;
 
+export default CategoriesDropDown;

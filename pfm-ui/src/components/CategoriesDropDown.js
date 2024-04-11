@@ -13,7 +13,7 @@ const CategoriesDropDown = ({ txId, onUpdateCategory }) => {
   useEffect(() => {
     fetchCategories();
     fetchTransactionDetails();
-  }, []);
+  }, [txId]);
 
   const fetchCategories = async () => {
     try {

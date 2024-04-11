@@ -26,11 +26,33 @@ const TransactionTable = () => {
   };
 
   const handleView = (record) => {
-    console.log('View transaction:', record);
-  };
-
-  const handleDelete = (record) => {
-    console.log('Delete transaction:', record);
+    Modal.info({
+      title: 'Transaction Details',
+      content: (
+        <div>
+          <h3>Selected Transaction</h3>
+          <p>ID: {record.id}</p>
+          <p>Description: {record.description}</p>
+          <p>Date: {record.date}</p>
+          <p>Amount: {record.amount}</p>
+          <p>Category: {record.category ? record.category.value : 'Uncategorized'}</p>
+  
+          {record.parent ? (
+            <>
+              <h3>Parent Transaction</h3>
+              <p>ID: {record.parent.id}</p>
+              <p>Description: {record.parent.description}</p>
+              <p>Date: {record.parent.date}</p>
+              <p>Amount: {record.parent.amount}</p>
+              <p>Category: {record.parent.category ? record.parent.category.value : 'Uncategorized'}</p>
+            </>
+          ) : (
+            <p>No parent transaction found.</p>
+          )}
+        </div>
+      ),
+      onOk() {},
+    });
   };
 
   const handleCategoryChange = (txId) => {
@@ -85,11 +107,10 @@ const TransactionTable = () => {
     {
       title: 'Actions',
       key: 'actions',
-      colSpan: 3,
+      colSpan: 2,
       render: (_, record) => (
         <Space>
           <Button onClick={() => handleView(record)}>View</Button>
-          <Button onClick={() => handleDelete(record)} danger>Delete</Button>
           <Button onClick={() => handleCategoryChange(record.id)}>Change Category</Button>
         </Space>
       ),

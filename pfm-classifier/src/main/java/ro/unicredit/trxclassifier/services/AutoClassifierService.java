@@ -6,19 +6,19 @@ import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.util.ObjectUtils;
 import org.springframework.web.client.RestTemplate;
 import ro.unicredit.trxclassifier.exceptions.ClassificationException;
-import ro.unicredit.trxclassifier.exceptions.DefaultExceptionMessages;
 import ro.unicredit.trxclassifier.services.dtos.*;
 import ro.unicredit.trxclassifier.utils.WordUtils;
 
 import java.util.*;
 
+import static org.apache.commons.lang3.ObjectUtils.isEmpty;
+
 @Service
 @RequiredArgsConstructor
 public class AutoClassifierService {
-    public static final String TOKEN_SPLITTER_REGEX = "[\\s-*.,]+";
+    private static final String TOKEN_SPLITTER_REGEX = "[\\s-*.,]+";
     private final RestTemplate restTemplate;
     private final ManualClassifierService manualClassifierService;
     @Value("${url.categories}")
@@ -36,9 +36,9 @@ public class AutoClassifierService {
         );
 
         List<ResponseCategoryDto> possibleCategories = categories.getBody();
-        if (!categories.getStatusCode().is2xxSuccessful() || ObjectUtils.isEmpty(possibleCategories)
+        if (!categories.getStatusCode().is2xxSuccessful() || isEmpty(possibleCategories)
                 || possibleCategories.size() == 0) {
-            throw new ClassificationException(DefaultExceptionMessages.UNABLE_TO_CLASSIFY_BY_DESCRIPTION.getMessage());
+            throw new ClassificationException();
         }
 
         return manualClassifierService.classify(txId, possibleCategories.get(0).getId());
@@ -54,8 +54,8 @@ public class AutoClassifierService {
                 }
         );
         var body = keywordsResponse.getBody();
-        if (ObjectUtils.isEmpty(body)) {
-            throw new ClassificationException(DefaultExceptionMessages.UNABLE_TO_CLASSIFY_BY_DESCRIPTION.getMessage());
+        if (isEmpty(body)) {
+            throw new ClassificationException();
         }
         return classifyV2(List.of(tokens), body);
     }
@@ -87,6 +87,9 @@ public class AutoClassifierService {
     private ResponseKeywordWithOccurrencesDto getResponseKeywordWithOccurrencesDto(Map<Long, Integer> keywordCount,
                                                                                    ResponseKeywordDto responseKeywordDto) {
         Integer countResult = keywordCount.get(responseKeywordDto.getId());
+        if(isEmpty(countResult)) {
+            countResult = 0;
+        }
         return new ResponseKeywordWithOccurrencesDto(responseKeywordDto, countResult);
     }
 

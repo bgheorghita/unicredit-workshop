@@ -1,7 +1,7 @@
-package ro.unicredit.trxclassifier.exceptions;
+package ro.unicredit.trxclassifier.exceptions.constants;
 
 public enum DefaultExceptionMessages {
-    NOT_FOUND("Requested resource not found."),
+    RESOURCE_NOT_FOUND("Requested resource not found."),
     UNEXPECTED_ERROR("Unexpected error."),
     UNEXPECTED_CLIENT_ERROR("Unexpected client error."),
     UNABLE_TO_CLASSIFY_BY_DESCRIPTION("Unable to classify be description.");

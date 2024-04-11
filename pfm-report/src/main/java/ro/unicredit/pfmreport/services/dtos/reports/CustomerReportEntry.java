@@ -6,6 +6,8 @@ import java.math.BigDecimal;
 import java.util.List;
 
 @Builder
-public record CustomerReportEntry(String categoryName, BigDecimal amount, Float percentage,
+public record CustomerReportEntry(String categoryName,
+                                  BigDecimal amount,
+                                  Float percentage,
                                   List<CustomerReportEntry> subcategories) {
 }

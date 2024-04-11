@@ -6,11 +6,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 @AllArgsConstructor
-@NoArgsConstructor
 @Data
 public class CustomerReport {
-    private List<CustomerReportEntry> entries = new ArrayList<>();
-    public void addRecord(CustomerReportEntry entry) {
+    private List<CustomerReportEntry> entries;
+    public void addEntry(CustomerReportEntry entry) {
         entries.add(entry);
     }
 }

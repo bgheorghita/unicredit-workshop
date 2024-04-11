@@ -1,3 +1,74 @@
+pfm-crud - update also in pom.xml
+APIExceptionHandler
+- add static import for HttpStatus.* and DefaultExceptionMessages
+- move DefaultExceptionMessages in a separate package > exceptions.constants
+DefaultExceptionMessages 
+- remove getMessage - not used
+
+CategoryService
+- save:  is really needed a new object: savedCategory, in order just to return it?
+- update: please rewrite as follows since we should avoid null object: (! do this in all similar situations) 
+ Optional<Category> categoryParent = categoryRepository.findById(id);
+        categoryParent.ifPresent(categoryToUpdate::setParent);
+
+TransactionService
+- updateTransactionCategory - duplicate message
+
+pfm-report
+CustomerReportEntry - reformat each attibute on a line
+public record CustomerReportEntry(String categoryName, 
+                                  BigDecimal amount, 
+                                  Float percentage,
+                                  List<CustomerReportEntry> subcategories) {
+
+CustomerReport
+- no need for initializer
+- rename addRecord to addEntry
+
+CustomerReportService
+- replace for with forEach:         transactions.forEach(transaction -> addToCategoryStatistics(transaction.getCategory(), transaction.getAmount(), categoryStatistics));
+- add static import for ObjectUtils.*
+- please avoid sending a parameter and then use it in the parent method for ex: computePercentages > computePercentage from computePercentage you can return percentagesIndexedByCategory and declare it at computePercentage level
+
+    private Map<CategoryDetails, Float> computePercentages(Map<CategoryDetails, BigDecimal> statistics) {
+        BigDecimal totalAmount = computeTotalAmount(statistics);
+
+       return  computePercentage(statistics, totalAmount);
+    }
+
+private  Map<CategoryDetails, Float> computePercentage(Map<CategoryDetails, BigDecimal> statistics, BigDecimal totalAmount) {
+        Map<CategoryDetails, Float> percentagesIndexedByCategory = new HashMap<>();
+        for (Map.Entry<CategoryDetails, BigDecimal> entry : statistics.entrySet()) {
+            BigDecimal categoryAmount = entry.getValue();
+            BigDecimal percentage;
+            CategoryDetails parentCategory = entry.getKey().getParent();
+
+            if (!ObjectUtils.isEmpty(parentCategory)) {
+                percentage = categoryAmount.divide(totalAmount, 4, RoundingMode.HALF_UP)
+                        .multiply(BigDecimal.valueOf(100));
+            } else {
+                percentage = BigDecimal.valueOf(100);
+            }
+
+            percentagesIndexedByCategory.put(entry.getKey(), percentage.floatValue());
+        }
+        return percentagesIndexedByCategory;
+    }
+
+pfm-classifier
+- add static import for HttpStatus.* and DefaultExceptionMessages
+- move DefaultExceptionMessages in a separate package > exceptions.constants
+DefaultExceptionMessages 
+
+ResponseKeywordWithOccurrencesDto
+- Generating equals/hashCode implementation but without a call to superclass, this should be avoided
+
+AutoClassifierService
+- add static import for ObjectUtils.*, DefaultExceptionMessages.*
+- getResponseKeywordWithOccurrencesDto -> why Integer and not int?
+
+###########################################################################################################################################################################################################
+
 !! rename all microservices so they are consistent
 
 PFM -> rename so it clearer

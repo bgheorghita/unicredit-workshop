@@ -11,6 +11,7 @@ import ro.unicredit.pfm.services.mappers.requests.RequestCategoryMapper;
 import ro.unicredit.pfm.services.mappers.responses.ResponseCategoryMapper;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @AllArgsConstructor
@@ -46,9 +47,9 @@ public class CategoryService {
     public ResponseCategoryDto update(Long id, RequestCategoryDto requestCategoryDto) {
         Category categoryToUpdate =  categoryRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Update failed. Category not found."));
-        Category categoryParent = categoryRepository.findById(id).orElse(null);
+        Optional<Category> categoryParent = categoryRepository.findById(id);
+        categoryParent.ifPresent(categoryToUpdate::setParent);
         categoryToUpdate.setValue(requestCategoryDto.getValue());
-        categoryToUpdate.setParent(categoryParent);
         return save(requestCategoryMapper.toDto(categoryToUpdate));
     }
 

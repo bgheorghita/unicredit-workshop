@@ -67,7 +67,7 @@ public class TransactionService {
         Transaction existingTransaction = transactionRepository.findById(txId)
                 .orElseThrow(() -> new NotFoundException("Update failed. Transaction not found."));
         Category existingCategory = categoryRepository.findById(categoryId)
-                .orElseThrow(() -> new NotFoundException("Update failed. Transaction not found."));
+                .orElseThrow(() -> new NotFoundException("Update failed. Category not found."));
         existingTransaction.setCategory(existingCategory);
         Transaction updatedTransaction = transactionRepository.save(existingTransaction);
         return responseTransactionMapper.toDto(updatedTransaction);

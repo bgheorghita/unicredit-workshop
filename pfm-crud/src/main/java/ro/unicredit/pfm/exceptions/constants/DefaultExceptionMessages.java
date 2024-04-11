@@ -1,7 +1,7 @@
-package ro.unicredit.pfm.exceptions;
+package ro.unicredit.pfm.exceptions.constants;
 
 public enum DefaultExceptionMessages {
-    NOT_FOUND("Requested resource not found."),
+    RESOURCE_NOT_FOUND("Requested resource not found."),
     UNEXPECTED_ERROR("Unexpected error.");
 
     private final String message;

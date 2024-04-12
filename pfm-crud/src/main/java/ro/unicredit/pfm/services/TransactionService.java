@@ -16,6 +16,7 @@ import ro.unicredit.pfm.services.dtos.responses.ResponseTransactionDto;
 import ro.unicredit.pfm.services.mappers.requests.RequestTransactionMapper;
 import ro.unicredit.pfm.services.mappers.responses.ResponseTransactionMapper;
 
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -35,6 +36,10 @@ public class TransactionService {
         Transaction transaction = transactionRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Transaction with id " + id + " not found."));
         return responseTransactionMapper.toDto(transaction);
+    }
+
+    public List<ResponseTransactionDto> findAllByDateBetween(Date start, Date end) {
+        return responseTransactionMapper.toDto(transactionRepository.findAllByDateBetween(start, end));
     }
 
     public ResponseTransactionDto save(RequestTransactionDto requestTransactionDto){

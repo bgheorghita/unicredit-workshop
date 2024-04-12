@@ -1,12 +1,14 @@
 package ro.unicredit.pfm.controllers;
 
 import lombok.AllArgsConstructor;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.*;
 import ro.unicredit.pfm.services.TransactionService;
 import ro.unicredit.pfm.services.dtos.requests.RequestTransactionDto;
 import ro.unicredit.pfm.services.dtos.requests.TransactionSplitDto;
 import ro.unicredit.pfm.services.dtos.responses.ResponseTransactionDto;
 
+import java.util.Date;
 import java.util.List;
 
 @RestController
@@ -23,6 +25,13 @@ public class TransactionController {
     @GetMapping("/{id}")
     public ResponseTransactionDto getTransactionById(@PathVariable Long id){
         return transactionService.findById(id);
+    }
+
+    @GetMapping("/date")
+    public List<ResponseTransactionDto> findAllByDateBetween(
+            @RequestParam("start") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date start,
+            @RequestParam("end") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date end) {
+        return transactionService.findAllByDateBetween(start, end);
     }
 
     @PostMapping

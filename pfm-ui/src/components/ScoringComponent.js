@@ -21,11 +21,18 @@ const DateRangeScoringPage = () => {
   }, [transactions]);
 
   const handleDateRangeChange = (dates) => {
+    console.log('Selected date range:', dates);
     setDateRange(dates);
+    setTransactions([]);
+    setScoringResult(null);
   };
 
   const fetchTransactions = async () => {
     try {
+      if (!dateRange || dateRange.length === 0) {
+        console.error('Date range is not set.');
+        return;
+      }
       const startDate = dateRange[0].toISOString();
       const endDate = dateRange[1].toISOString();
       const url = `${PFM_CRUD_BASE_URL}/${PFM_CRUD_TRANSACTIONS_REQUEST_PATH}/date?start=${encodeURIComponent(startDate)}&end=${encodeURIComponent(endDate)}`;
@@ -63,6 +70,29 @@ const DateRangeScoringPage = () => {
       <h1>Scoring</h1>
       <RangePicker onChange={handleDateRangeChange} />
       <Button type="primary" onClick={handleCalculateScoring} style={{ marginTop: '16px' }}>Calculate Scoring</Button>
+      {transactions.length === 0 ? (
+        <p>No transactions found for the selected date range.</p>
+      ) : (
+        <div style={{ marginTop: '24px', maxWidth: '600px' }}>
+          <h2>Transactions:</h2>
+          <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+            <thead>
+              <tr>
+                <th>Date</th>
+                <th>Amount</th>
+              </tr>
+            </thead>
+            <tbody>
+              {transactions.map((transaction, index) => (
+                <tr key={index}>
+                  <td>{transaction.date}</td>
+                  <td>${transaction.amount.toFixed(2)}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
       {scoringResult && (
         <div style={{ marginTop: '24px' }}>
           <h2>Result:</h2>
@@ -72,6 +102,8 @@ const DateRangeScoringPage = () => {
       )}
     </div>
   );
-};
+  
+  
+}
 
 export default DateRangeScoringPage;

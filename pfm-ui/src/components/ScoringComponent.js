@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { DatePicker, Button } from 'antd';
 
 const { RangePicker } = DatePicker;
@@ -13,6 +13,12 @@ const DateRangeScoringPage = () => {
   const [dateRange, setDateRange] = useState([]);
   const [transactions, setTransactions] = useState([]);
   const [scoringResult, setScoringResult] = useState(null);
+
+  useEffect(() => {
+    if (transactions.length > 0) {
+      computeScoring();
+    }
+  }, [transactions]);
 
   const handleDateRangeChange = (dates) => {
     setDateRange(dates);
@@ -50,7 +56,6 @@ const DateRangeScoringPage = () => {
 
   const handleCalculateScoring = async () => {
     await fetchTransactions();
-    await computeScoring();
   };
 
   return (
